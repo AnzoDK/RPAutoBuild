@@ -3,3 +3,6 @@
 RPAudio/*
 *.exe
 .kdev4/*
+.kdev4.old/*
+kdev4/*
+kdev4.old/*
