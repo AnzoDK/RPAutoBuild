@@ -34,7 +34,7 @@ int main(int argc, char** argv)
         {
             exit(0xFF0000FF); //We can't have a '&' in our input
         }
-        std::string commandString = "git clone " + gitRepo;
+        std::string commandString = "git clone --recurse-submodules --remote-submodules " + gitRepo;
         int err = system(commandString.c_str());
         if (err != 0)
         {

@@ -5,6 +5,26 @@
  */
 
 namespace fs = std::filesystem;
+
+void RPAutoManager::m_SetVar(std::string name, std::string val)
+{
+    vars.push_back(Key<std::string>(name,val));
+}
+
+std::string RPAutoManager::m_GetVar(std::string name)
+{
+    for(size_t i = 0; i < vars.size(); i++)
+    {
+        if(vars.at(i).keyName == name)
+        {
+            return vars.at(i).keyValue;
+        }
+    }
+    return "_Error_";
+}
+
+
+
 bool RPAutoManager::GetSetting(std::string line, std::vector<std::string>& pushBackVector)
 {
             std::string tmp = line;
@@ -26,6 +46,36 @@ bool RPAutoManager::GetSetting(std::string line, std::vector<std::string>& pushB
             }
             return true;
 }
+
+/*bool RPAutoManager::GetSetting(std::string line, std::vector<Key<std::string>>& pushBackVector)
+{
+            int varC = 0;
+            std::string vars[2]; 
+            std::string tmp = line;
+            size_t start = tmp.find("{");
+            size_t end = tmp.find("}");
+            if(start == std::string::npos || end == std::string::npos)
+            {
+                return false;
+            }
+            size_t e_start = tmp.find("\"",start);
+            size_t e_end = 0;
+            while(e_start != std::string::npos && e_end != std::string::npos)
+            {
+                e_end = tmp.find("\"",e_start+1);
+                //Getting rid of the '"' character
+                e_start++;
+                vars[varC] = tmp.substr(e_start,e_end-e_start);
+                e_start = tmp.find("\"",e_end+1);
+                varC++;
+                if(varC >= 2)
+                {
+                    pushBackVector.push_back(Key<std::string>(vars[0],vars[1]));
+                    return true;
+                }
+            }
+            return true;
+}*/
 
 bool RPAutoManager::GetSetting(std::string line, std::string& setting)
 {
@@ -408,6 +458,27 @@ void RPAutoManager::ParseConfig()
             }
             
         }
+        if(lines.at(count).find("SET_VAR=") != std::string::npos)
+        {
+            std::vector<std::string> sett = std::vector<std::string>();
+            if(!GetSetting(lines.at(count),sett))
+            {
+                std::cout << "Could not parse setting \"OS_COMPILER\"" << std::endl;
+                exit(1);
+            }
+            else
+            {
+                if(sett.size() != 2)
+                {
+                    std::cout << "SET_VAR has too few or too many arguments" << std::endl;
+                    exit(1);
+                }
+                m_SetVar(sett.at(0),sett.at(1));
+                lines.erase(lines.begin()+count);
+                count = 0;
+                continue;
+            }
+        }
         //If a line is not cought by one of the statements it ends here and gets deleted, and we assume that it was not meant to be parsed
         if(count <= lines.size())
         {
@@ -638,6 +709,38 @@ void RPAutoManager::m_buildTarget(size_t i,std::string target)
     if(m_TargetSettingExists(target,"flags"))
     {
         Key<std::string> flags = m_GetTargetKeySetting(target, "flags");
+        flags.keyValue += "D"+GetOSDefine(oses.at(i),arch)+";";
+        if(flags.keyValue.find("_var(") != std::string::npos)
+        {
+            size_t varStart = flags.keyValue.find("_var(");
+            while(varStart != std::string::npos)
+            {
+                size_t nextSetting = flags.keyValue.find(";");
+                size_t varEnd = flags.keyValue.find(")_",varStart);
+            
+                if((varStart != std::string::npos && varEnd != std::string::npos) && (nextSetting > varEnd || nextSetting == std::string::npos))
+                {
+                    //varStart+=5;
+                    std::string var = m_GetVar(flags.keyValue.substr(varStart+5,varEnd-(varStart+5)));
+                    if(var == "_Error_")
+                    {
+                        std::cout << "Variable: '" << flags.keyValue.substr(varStart+5,varEnd-(varStart+5)) << "' is not set" << std::endl;
+                        exit(1);
+                    }
+                    std::string post = flags.keyValue.substr(varEnd+2);
+                    std::string pre = flags.keyValue.substr(0,varStart);
+                    flags.keyValue = pre+var+post;
+                    std::cout << "Loaded var: '" << var << "' FullString: '" << flags.keyValue << "'" << std::endl;
+                    varStart = flags.keyValue.find(")",varEnd);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            
+        }
+        std::cout << flags.keyValue << std::endl;
         size_t front = 0;
         bool die = false;
         while(front != std::string::npos && !die)

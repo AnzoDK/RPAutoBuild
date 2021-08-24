@@ -22,7 +22,7 @@ Name=rpauto debug
 Type=Native Application
 
 [Launch][Launch Configuration 0][Data]
-Arguments=https://github.com/AnzoDK/RPAudio --local
+Arguments=https://github.com/AnzoDK/RPAutoBuild --local
 Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
 Dependency Action=Nothing
 EnvironmentGroup=

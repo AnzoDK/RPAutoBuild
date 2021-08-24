@@ -50,6 +50,7 @@ private:
     std::vector<std::string> targetConfig = std::vector<std::string>();
     std::vector<std::string> targets = std::vector<std::string>();
     std::vector<Key<std::string>> autobuildSettings = std::vector<Key<std::string>>();
+    std::vector<Key<std::string>> vars = std::vector<Key<std::string>>();
     std::vector<Key<std::vector<std::string>>> dependTree = std::vector<Key<std::vector<std::string>>>();
     std::vector<std::string> compiler = std::vector<std::string>();
     std::vector<Key<std::vector<Key<std::string>>>*> targetSettings = std::vector<Key<std::vector<Key<std::string>>>*>();
@@ -67,6 +68,9 @@ private:
     void m_ParseTarget(std::string target, size_t targetIndex);
     void m_BuildAndResolveDeps(size_t index);
     void m_buildTarget(size_t index,std::string target);
+    
+    std::string m_GetVar(std::string name);
+    void m_SetVar(std::string name, std::string val);
     
     bool m_TargetDepExists(size_t index, std::string dep);
     

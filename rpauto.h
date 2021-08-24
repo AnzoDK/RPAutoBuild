@@ -27,7 +27,7 @@ private:
 };
 
 //Common functions
-static std::string GetOSDefine(std::string os)
+static std::string GetOSDefine(std::string os, std::string arch)
 {
     //as there is only 3 Oses supported a if-else is okay
     //TODO add support for win64
@@ -37,7 +37,18 @@ static std::string GetOSDefine(std::string os)
     }
     else if (os == "Windows")
     {
-        return "win32"; 
+        if(arch == "x86")
+        {
+            return "win32";
+        }
+        else if(arch == "x86_64")
+        {
+            return "win64"; //this might be an issue...
+        }
+        else
+        {
+            return ""; //TODO
+        }
     }
     else if(os == "OSX")
     {
