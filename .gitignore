@@ -2,3 +2,4 @@
 *.o
 RPAudio/*
 *.exe
+.kdev4/*
