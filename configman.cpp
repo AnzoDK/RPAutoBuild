@@ -832,7 +832,64 @@ void RPAutoManager::m_buildTarget(size_t i,std::string target)
     }
     else
     {
-        buildCommand += " ./"+m_workFolder+"/"+in.keyValue; 
+        if(in.keyValue.find("_var(") != std::string::npos)
+        {
+            size_t varStart = in.keyValue.find("_var(");
+            while(varStart != std::string::npos)
+            {
+                size_t nextSetting = in.keyValue.find(";",varStart);
+                size_t varEnd = in.keyValue.find(")_",varStart);
+            
+                if((varStart != std::string::npos && varEnd != std::string::npos) && (nextSetting > varEnd || nextSetting == std::string::npos))
+                {
+                    //varStart+=5;
+                    std::string var = m_GetVar(in.keyValue.substr(varStart+5,varEnd-(varStart+5)),oses.at(i));
+                    if(var == "_Error_")
+                    {
+                        std::cout << "Variable: '" << in.keyValue.substr(varStart+5,varEnd-(varStart+5)) << "' is not set" << std::endl;
+                        exit(1);
+                    }
+                    std::string post = in.keyValue.substr(varEnd+2);
+                    if(var == "")
+                    {
+                        post = post.substr(1);
+                    }
+                    std::string pre = in.keyValue.substr(0,varStart);
+                    in.keyValue = pre+var+post;
+                    std::cout << "Loaded var: '" << var << "' FullString: '" << in.keyValue << "'" << std::endl;
+                    varStart = in.keyValue.find("_var(",varEnd);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            
+        }
+        std::cout << in.keyValue << std::endl;
+        size_t front = 0;
+        bool die = false;
+        while(front != std::string::npos && !die)
+        {
+            size_t next = in.keyValue.find(";",front+1);
+            if(next == std::string::npos)
+            {
+                next = in.keyValue.length();
+                die = 1;
+                if(front == in.keyValue.length()-1)
+                {
+                    break;
+                }
+            }
+            if(front != 0)
+            {
+                front++;
+            }
+            buildCommand +=  " ./"+m_workFolder+"/"+in.keyValue.substr(front,next-front)+" ";
+            front = next;
+        }
+        
+        //buildCommand += " ./"+m_workFolder+"/"+in.keyValue; 
     }
     
     //Output
@@ -875,9 +932,49 @@ void RPAutoManager::m_buildTarget(size_t i,std::string target)
     if(m_TargetSettingExists(target,"link"))
     {
         Key<std::string> links = m_GetTargetKeySetting(target, "link");
+        if(links.keyValue.find("_var(") != std::string::npos)
+        {
+            size_t varStart = links.keyValue.find("_var(");
+            while(varStart != std::string::npos)
+            {
+                size_t nextSetting = links.keyValue.find(";",varStart);
+                size_t varEnd = links.keyValue.find(")_",varStart);
+            
+                if((varStart != std::string::npos && varEnd != std::string::npos) && (nextSetting > varEnd || nextSetting == std::string::npos))
+                {
+                    //varStart+=5;
+                    std::string var = m_GetVar(links.keyValue.substr(varStart+5,varEnd-(varStart+5)),oses.at(i));
+                    if(var == "_Error_")
+                    {
+                        std::cout << "Variable: '" << links.keyValue.substr(varStart+5,varEnd-(varStart+5)) << "' is not set" << std::endl;
+                        exit(1);
+                    }
+                    std::string post = links.keyValue.substr(varEnd+2);
+                    std::string pre = links.keyValue.substr(0,varStart);
+                    if(var == "")
+                    {
+                        if(post.size() > 0)
+                        {
+                            post = post.substr(1);
+                        }
+                        
+                    }
+                    
+                    links.keyValue = pre+var+post;
+                    std::cout << "Loaded var: '" << var << "' FullString: '" << links.keyValue << "'" << std::endl;
+                    varStart = links.keyValue.find("_var(",varEnd);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            
+        }
+        std::cout << links.keyValue << std::endl;
         size_t front = 0;
         bool die = false;
-        while(front != std::string::npos && !die)
+        while(front != std::string::npos && !die && links.keyValue != "")
         {
             size_t next = links.keyValue.find(";",front+1);
             if(next == std::string::npos)
