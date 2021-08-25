@@ -6,6 +6,18 @@
 #include "rpauto.h"
 
 
+struct OSSetting //just a normal setting that allows testing against a OS
+{
+    OSSetting(std::string _name, std::string _val, std::string _cond) : name(_name), value(_val), os(_cond) {}
+    OSSetting(std::string _name, std::string _val) : name(_name), value(_val), os("_null_") {}
+    
+    
+    std::string name;
+    std::string value;
+    std::string os;
+    
+};
+
 class TargetBuildException : public std::exception
 {
 public:
@@ -50,7 +62,7 @@ private:
     std::vector<std::string> targetConfig = std::vector<std::string>();
     std::vector<std::string> targets = std::vector<std::string>();
     std::vector<Key<std::string>> autobuildSettings = std::vector<Key<std::string>>();
-    std::vector<Key<std::string>> vars = std::vector<Key<std::string>>();
+    std::vector<OSSetting> vars = std::vector<OSSetting>();
     std::vector<Key<std::vector<std::string>>> dependTree = std::vector<Key<std::vector<std::string>>>();
     std::vector<std::string> compiler = std::vector<std::string>();
     std::vector<Key<std::vector<Key<std::string>>>*> targetSettings = std::vector<Key<std::vector<Key<std::string>>>*>();
@@ -63,14 +75,15 @@ private:
     size_t m_GetkeyIndex(std::string name);
     Key<std::vector<Key<std::string>>>* m_GetTargetKey(std::string name);
     Key<std::string> m_GetTargetKeySetting(std::string name, std::string setting);
+    void m_UpdateTargetKeySetting(std::string name, std::string setting, std::string value);
     Key<std::vector<std::string>> m_GetDependecyKey(std::string name);
     bool m_TargetSettingExists(std::string name, std::string setting);
     void m_ParseTarget(std::string target, size_t targetIndex);
     void m_BuildAndResolveDeps(size_t index);
     void m_buildTarget(size_t index,std::string target);
     
-    std::string m_GetVar(std::string name);
-    void m_SetVar(std::string name, std::string val);
+    std::string m_GetVar(std::string name, std::string os);
+    void m_SetVar(std::string name, std::string val, std::string os="_null_");
     
     bool m_TargetDepExists(size_t index, std::string dep);
     
@@ -100,3 +113,4 @@ private:
     }
     
 };
+

@@ -6,18 +6,29 @@
 
 namespace fs = std::filesystem;
 
-void RPAutoManager::m_SetVar(std::string name, std::string val)
+void RPAutoManager::m_SetVar(std::string name, std::string val, std::string os)
 {
-    vars.push_back(Key<std::string>(name,val));
+    vars.push_back(OSSetting(name,val,os));
 }
 
-std::string RPAutoManager::m_GetVar(std::string name)
+std::string RPAutoManager::m_GetVar(std::string name, std::string os)
 {
     for(size_t i = 0; i < vars.size(); i++)
     {
-        if(vars.at(i).keyName == name)
+        if(vars.at(i).name == name)
         {
-            return vars.at(i).keyValue;
+            if(vars.at(i).os == "_null_")
+            {
+                return vars.at(i).value;
+            }
+            else if(os == vars.at(i).os)
+            {
+                return vars.at(i).value;
+            }
+            else
+            {
+                return "";
+            }
         }
     }
     return "_Error_";
@@ -183,12 +194,29 @@ Key<std::string> RPAutoManager::m_GetTargetKeySetting(std::string name, std::str
             {
                 if(targetSettings.at(i)->keyValue.at(u).keyName == setting)
                 {
-                    return targetSettings.at(i)->keyValue.at(u);
+                    return targetSettings.at(i)->keyValue.at(u); //returns a copy
                 }
             }
         }
     }
     return Key<std::string>("","");
+}
+
+void RPAutoManager::m_UpdateTargetKeySetting(std::string name, std::string setting, std::string value)
+{
+    for(size_t i = 0; i < targetSettings.size(); i++)
+    {
+        if(targetSettings.at(i)->keyName == name)
+        {
+            for(size_t u = 0; u < targetSettings.at(i)->keyValue.size(); u++)
+            {
+                if(targetSettings.at(i)->keyValue.at(u).keyName == setting)
+                {
+                    targetSettings.at(i)->keyValue.at(u) = Key<std::string>(targetSettings.at(i)->keyValue.at(u).keyName, value);
+                }
+            }
+        }
+    }
 }
 
 size_t RPAutoManager::m_GetkeyIndex(std::string name)
@@ -468,12 +496,21 @@ void RPAutoManager::ParseConfig()
             }
             else
             {
-                if(sett.size() != 2)
+                if(sett.size() != 3 && sett.size() != 2)
                 {
                     std::cout << "SET_VAR has too few or too many arguments" << std::endl;
                     exit(1);
                 }
-                m_SetVar(sett.at(0),sett.at(1));
+                
+                if(sett.size() == 3)
+                {
+                    m_SetVar(sett.at(0),sett.at(1),sett.at(2));
+                }
+                else
+                {
+                    m_SetVar(sett.at(0),sett.at(1));
+                }
+                
                 lines.erase(lines.begin()+count);
                 count = 0;
                 continue;
@@ -574,6 +611,7 @@ void RPAutoManager::m_ParseTarget(std::string target, size_t targetIndex)
         
         size_t looker_start = tmp.find('(');
         size_t looker_end = tmp.find(')');
+        //Get Obj type
         if(looker_start != std::string::npos && looker_end != std::string::npos)
         {
             std::string targetType = tmp.substr(looker_start+1,looker_end-looker_start-1);
@@ -596,7 +634,7 @@ void RPAutoManager::m_ParseTarget(std::string target, size_t targetIndex)
                     if(!m_TargetSettingExists(target, "flags"))
                     {
                         m_GetTargetKey(target)->keyValue = std::vector<Key<std::string>>();
-                        m_GetTargetKey(target)->keyValue.push_back(Key<std::string>("flags","c;"));
+                        m_GetTargetKey(target)->keyValue.push_back(Key<std::string>("flags","c"));
                         
                     }
                     if(!m_TargetSettingExists(target, "target_type"))
@@ -623,9 +661,10 @@ void RPAutoManager::m_ParseTarget(std::string target, size_t targetIndex)
                 else
                 {
                     //Checking if the setting is already applied and adding it if not
-                    if(m_GetTargetKeySetting(target, setting).keyValue.find(val) != std::string::npos)
+                    if(m_GetTargetKeySetting(target, setting).keyValue.find(val) == std::string::npos)
                     {
-                        m_GetTargetKeySetting(target, setting).keyValue+=std::string(";"+val);
+                        
+                        m_UpdateTargetKeySetting(target, setting,m_GetTargetKeySetting(target, setting).keyValue+=std::string(";"+val));
                     }
                 }
                 c_i++;
@@ -709,29 +748,37 @@ void RPAutoManager::m_buildTarget(size_t i,std::string target)
     if(m_TargetSettingExists(target,"flags"))
     {
         Key<std::string> flags = m_GetTargetKeySetting(target, "flags");
+        if(flags.keyValue.at(flags.keyValue.length()-1) != ';')
+        {
+            flags.keyValue+=";";
+        }
         flags.keyValue += "D"+GetOSDefine(oses.at(i),arch)+";";
         if(flags.keyValue.find("_var(") != std::string::npos)
         {
             size_t varStart = flags.keyValue.find("_var(");
             while(varStart != std::string::npos)
             {
-                size_t nextSetting = flags.keyValue.find(";");
+                size_t nextSetting = flags.keyValue.find(";",varStart);
                 size_t varEnd = flags.keyValue.find(")_",varStart);
             
                 if((varStart != std::string::npos && varEnd != std::string::npos) && (nextSetting > varEnd || nextSetting == std::string::npos))
                 {
                     //varStart+=5;
-                    std::string var = m_GetVar(flags.keyValue.substr(varStart+5,varEnd-(varStart+5)));
+                    std::string var = m_GetVar(flags.keyValue.substr(varStart+5,varEnd-(varStart+5)),oses.at(i));
                     if(var == "_Error_")
                     {
                         std::cout << "Variable: '" << flags.keyValue.substr(varStart+5,varEnd-(varStart+5)) << "' is not set" << std::endl;
                         exit(1);
                     }
                     std::string post = flags.keyValue.substr(varEnd+2);
+                    if(var == "")
+                    {
+                        post = post.substr(1);
+                    }
                     std::string pre = flags.keyValue.substr(0,varStart);
                     flags.keyValue = pre+var+post;
                     std::cout << "Loaded var: '" << var << "' FullString: '" << flags.keyValue << "'" << std::endl;
-                    varStart = flags.keyValue.find(")",varEnd);
+                    varStart = flags.keyValue.find("_var(",varEnd);
                 }
                 else
                 {

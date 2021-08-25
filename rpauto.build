@@ -5,7 +5,8 @@ OS_TARGET={"default","default"};
 ARCH={"x86_64"}
 # OS_MAKE_ARGS={"DEBUG_STATE=1","DEBUG_STATE=1"};
 SET_BUILD_VAR={"clean","true"};
-SET_VAR={"global_flags","g3;Wall;std=c++17;"}
+SET_VAR={"global_flags","g3;Wall;std=c++17"}
+SET_VAR={"Windows_include","I/usr/include/RPCommon","Windows"}
 # Target Descriptions:
 
 # When no extention is specified the OS specific extention will be used
@@ -18,12 +19,12 @@ __default__ (_final_) | __configman__ | __main__
 - lib:_nolib_
 - out:rpauto
 - in:_depends_
-- flags:_var(global_flags)_
+- flags:_var(global_flags)_;_var(Windows_include)_
 
 __configman__ (_obj_)
 - in:configman.cpp
-- flags:g3;Wall;std=c++17
+- flags:_var(global_flags)_;_var(Windows_include)_
 
 __main__ (_obj_)
 - in:main.cpp
-- flags:g3;Wall;std=c++17
+- flags:_var(global_flags)_;_var(Windows_include)_

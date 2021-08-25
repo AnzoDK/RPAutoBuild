@@ -3,7 +3,11 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
+#if defined(win32) || defined(win64)
+#include <RPCommon.h>
+#elif defined(linux)
 #include <RPCommon/RPCommon.h>
+#endif
 //Errors
 class LinkParseException : public std::exception
 {
