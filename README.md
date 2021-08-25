@@ -7,7 +7,7 @@ RPAutoBuild is a C++ alternitive to make (and I guess Cmake) and works by clonin
 ### Requirements
 RPAutoBuild requires [RPCommonLib](https://github.com/AnzoDK/RPCommonLib) (a set of headers made to make my own life easier)
 
-RPAutoBuild requires [git](https://git-scm.com/downloads) to dlownload repos
+RPAutoBuild requires [git](https://git-scm.com/downloads) to download repos
 
 ### Build
 Ironically enough a makefile is provided as most people are assumed to have make installed - but a `rpauto.build` is also provided to serve as an example and does in fact build RPAutoBuild if a previous version of the software is already installed.<br>
