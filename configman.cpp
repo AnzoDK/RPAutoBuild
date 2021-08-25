@@ -907,22 +907,22 @@ void RPAutoManager::m_buildTarget(size_t i,std::string target)
     {
         if(m_GetTargetKeySetting(target,"target_type").keyValue == "_obj_")
         {
-            out = target+".o";
+            out = " ./"+m_workFolder+"/"+target+".o";
         }
         else
         {
-            out = target+m_GetOsEx(oses.at(i),libState);
+            out = " ./"+m_workFolder+"/"+target+m_GetOsEx(oses.at(i),libState);
         }
     }
     else
     {
         if(m_GetTargetKeySetting(target,"target_type").keyValue == "_obj_")
         {
-            out =  m_GetTargetKeySetting(target,"out").keyValue+m_GetOsEx(oses.at(i),libState)+".o";
+            out =  " ./"+m_workFolder+"/"+m_GetTargetKeySetting(target,"out").keyValue+m_GetOsEx(oses.at(i),libState)+".o";
         }
         else
         {
-             out = m_GetTargetKeySetting(target,"out").keyValue+m_GetOsEx(oses.at(i),libState);
+             out = " ./"+m_workFolder+"/"+m_GetTargetKeySetting(target,"out").keyValue+m_GetOsEx(oses.at(i),libState);
         }
        
     }
