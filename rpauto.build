@@ -6,7 +6,7 @@ ARCH={"x86_64"}
 # OS_MAKE_ARGS={"DEBUG_STATE=1","DEBUG_STATE=1"};
 SET_BUILD_VAR={"clean","true"};
 SET_VAR={"global_flags","g3;Wall;std=c++17"}
-SET_VAR={"Windows_include","I/usr/include/RPCommon","Windows"}
+SET_VAR={"Windows_flags","I/usr/include/RPCommon;pthread","Windows"}
 SET_VAR={"Windows_link",":libwinpthread.a","Windows"}
 # Target Descriptions:
 
