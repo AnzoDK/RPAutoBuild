@@ -3,11 +3,12 @@ pkgname="rpautobuild"
 provides=('rpautobuild')
 depends=('rpcommon>=0.1.11')
 # conflicts=('rpcommon-dev')
-pkgver=VERSION
+pkgver=0.1.r28.abf41c3
+MAJORVERSION=0.1
 pkgver()
 {
-  cd "$pkgname"
-  git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+  cd RPAutoBuild
+  printf "$MAJORVERSION.r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 pkgrel=1
 arch=('any')
@@ -19,14 +20,8 @@ license=('BSD2')
 md5sums=('SKIP')
 package()
 {
-   which rpauto
-   if [ $? -ne 0 ]
-   then
-    echo 'No previous version of RPAuto - using make instead'
-    make OS=linux
-   else
-    rpauto ./ --local
-   fi
+   cd RPAutoBuild
+   (which rpauto &>/dev/null && rpauto ./ --local) || make OS=linux
    mkdir -p "$pkgdir/usr/bin/"
    install -D ./rpauto.out "$pkgdir/usr/bin/"
    #install -D ./LICENSE "${pkgdir}"/usr/share/licenses/$pkgname/LICENSE   
