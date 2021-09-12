@@ -10,3 +10,4 @@ src/*
 RPCommonLib/*
 RPAutoBuild/*
 rpautobuild/*
+*.zst
