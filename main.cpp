@@ -9,7 +9,7 @@ int main(int argc, char** argv)
     std::string cloneName = "";
     if (argc != 2 && argc != 3)
     {
-        std::cout << "Invalid Repo" << std::endl << "USAGE:" << std::endl << "autobuild <git link>" << std::endl;
+        std::cout << "Invalid Repo" << std::endl << "USAGE:" << std::endl << "autobuild <git link> || (<directory> --local )" << std::endl;
         exit(2);
     }
     
@@ -17,7 +17,8 @@ int main(int argc, char** argv)
     {
        
         try{
-            cloneName = GetRepoNameFromLink(argv[1]);
+            //cloneName = GetRepoNameFromLink(argv[1]);
+            cloneName = argv[1];
         }
         catch(LinkParseException e)
         {

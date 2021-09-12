@@ -48,7 +48,17 @@ class RPAutoManager
 {
 public:
     RPAutoManager(std::string workFolder) {m_workFolder = workFolder;};
-    ~RPAutoManager() {};
+    ~RPAutoManager() {
+        //linesBackup.clear();oses.clear(); 
+        //targetConfig.clear(); 
+        //targets.clear(); 
+        autobuildSettings.clear(); 
+        //vars.clear(); 
+        dependTree.clear(); 
+        //compiler.clear(); 
+        targetSettings.clear();
+        //oses.clear();
+    };
     bool GetSetting(std::string line, std::vector<std::string>& pushBackVector);
     bool GetSetting(std::string line, std::vector<Key<std::string>>& pushBackVector);
     bool GetSetting(std::string line, std::string& settingString);
