@@ -1,8 +1,9 @@
 # Maintainer: AnzoDK <anton@rosenoern-productions.dk>
-pkgname="rpautobuild-git"
+pkgname="rpautobuild"
 provides=('rpautobuild')
 depends=('rpcommon>=0.1.11')
 # conflicts=('rpcommon-dev')
+pkgver=VERSION
 pkgver()
 {
   cd "$pkgname"
@@ -13,7 +14,7 @@ arch=('any')
 pkgdesc="Yet Another C++ Auto Build System"
 url="https://github.com/AnzoDK/RPAutoBuild"
 makedepends=('git')
-source=("git+https://github.com/AnzoDK/RPCommonLib.git#branch=master")
+source=("git+https://github.com/AnzoDK/RPAutoBuild.git#branch=master")
 license=('BSD2')
 md5sums=('SKIP')
 package()

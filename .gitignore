@@ -6,3 +6,7 @@ RPAudio/*
 .kdev4.old/*
 kdev4/*
 kdev4.old/*
+src/*
+RPCommonLib/*
+RPAutoBuild/*
+rpautobuild/*
