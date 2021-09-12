@@ -1,12 +1,12 @@
 # RPAutoBuild Example Build Config (This would work if you wanted to build RPAutoBuild With RPAutoBuild)
-OS={"Linux"};
-OS_COMPILER={"g++"};
-OS_TARGET={"default"};
+OS={"Windows","Linux"};
+OS_COMPILER={"_null_","g++"};
+OS_TARGET={"default","default"};
 ARCH={"x86_64"}
-
+# OS_MAKE_ARGS={"DEBUG_STATE=1","DEBUG_STATE=1"};
 SET_BUILD_VAR={"clean","true"};
 SET_VAR={"global_flags","g3;Wall;std=c++17"}
-# SET_VAR={"Windows_flags","I/usr/include/RPCommon;static -lpthread","Windows"}
+SET_VAR={"Windows_flags","I/usr/include/RPCommon;static -lpthread","Windows"}
 # SET_VAR={"Windows_link","","Windows"}
 # Target Descriptions:
 
@@ -30,4 +30,3 @@ __configman__ (_obj_)
 __main__ (_obj_)
 - in:main.cpp
 - flags:_var(global_flags)_;_var(Windows_flags)_
-
