@@ -24,7 +24,7 @@ package()
     echo 'No previous version of RPAuto - using make instead'
     make OS=linux
    else
-   
+    rpauto ./ --local
    fi
    mkdir -p "$pkgdir/usr/bin/"
    install -D ./rpauto.out "$pkgdir/usr/bin/"
