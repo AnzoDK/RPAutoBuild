@@ -3,7 +3,7 @@ pkgname="rpautobuild"
 provides=('rpautobuild')
 depends=('rpcommon>=0.1.11')
 # conflicts=('rpcommon-dev')
-pkgver=0.1.r31.eed7087
+pkgver=0.1.r33.4a7ccfa
 MAJORVERSION=0.1
 pkgver()
 {
@@ -23,7 +23,7 @@ package()
    cd RPAutoBuild
    (which rpauto &>/dev/null && rpauto ./ --local) || make OS=linux
    mkdir -p "$pkgdir/usr/bin/"
-   install -D ./rpauto.out "$pkgdir/usr/bin/"
+   install -D ./rpauto.out "$pkgdir/usr/bin/rpauto"
    #install -D ./LICENSE "${pkgdir}"/usr/share/licenses/$pkgname/LICENSE   
 }
 
