@@ -27,19 +27,19 @@ rpauto https://github.com/AnzoDK/RPAutoBuild
 ```
 
 ### Usage
-RPAutoBuild (as of now) requires a git repo (this requirement will be removed) and will download it using the following command:
+RPAutoBuild requires a git repo or a local folder. Git repos will be downloaded with the following command:
 
 
 ```
 rpauto {Git_Repo}
 ```
 
-It is possible however to build already downloaded repos, as long as the URL is provided (this will be changed to allow just a folder) with the following command:
+Building a project from a local folder can be achieved with the following command:
 
 ```
-rpauto {Git_Repo} --local
+rpauto <folder> --local
 ```
-The downside of this command (as of now) is that the repo in question has to exist in the working directory of the terminal. (Also dumb, and will be fixed)
+The downside of this command (as of now) is that the repo/project in question has to exist in the working directory of the terminal. (Also dumb, and will be fixed)
 
 ### Config
 The rpauto.build file is simple to setup. The first lines will contain the settings for the builder itself. Here there are a few required lines:
