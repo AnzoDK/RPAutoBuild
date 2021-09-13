@@ -2,8 +2,7 @@
 pkgname="rpautobuild"
 provides=('rpautobuild')
 depends=('rpcommon>=0.1.11')
-# conflicts=('rpcommon-dev')
-pkgver=0.1.r34.6423ebf
+pkgver=0.1.r36.e4541b4
 MAJORVERSION=0.1
 pkgver()
 {
