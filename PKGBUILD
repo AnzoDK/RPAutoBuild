@@ -21,7 +21,7 @@ md5sums=('SKIP')
 package()
 {
    cd RPAutoBuild
-   (which rpauto &>/dev/null && rpauto ./ --local) || make OS=linux
+   (which rpauto &>/dev/null && echo "Using Old RPAuto to build RPAuto" && rpauto ./ --local) || (echo "No RPAuto found - Defaulting to make" && make OS=linux)
    mkdir -p "$pkgdir/usr/bin/"
    install -D ./rpauto.out "$pkgdir/usr/bin/rpauto"
    #install -D ./LICENSE "${pkgdir}"/usr/share/licenses/$pkgname/LICENSE   
