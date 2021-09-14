@@ -575,7 +575,7 @@ std::string RPAutoManager::m_GetDefaultCompiler(size_t osIndex)
     //Determine if a supported VS Installation is present
     std::string vsPath = "";
     std::string vsBase = "C:\\Program Files (x86)\\Microsoft Visual Studio\\";
-    std::string vsPost = "\\Community\\Common7\\Tools\\cl.exe";
+    std::string vsPost = "\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64\\cl.exe";
     for(int i = 2015; i < 2022; i++)
     {
         DWORD ftyp = GetFileAttributesA(std::string(vsBase + std::to_string(i)).c_str());
