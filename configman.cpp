@@ -593,6 +593,13 @@ std::string RPAutoManager::m_GetDefaultCompiler(size_t osIndex)
             break;
         }
     }
+    bool MSCVwork = true;
+    DWORD ftyp = GetFileAttributesA(std::string(vsBase + std::to_string(i)).c_str());
+    if (ftyp == INVALID_FILE_ATTRIBUTES)
+    {
+        MSCVwork = false;
+    }    
+    
     int gpp = 0;
     gpp = system("g++ --version");
     
@@ -601,7 +608,7 @@ std::string RPAutoManager::m_GetDefaultCompiler(size_t osIndex)
     {
         if(arch == "x86_64" || arch == "x86")
         {
-            if(vsPath != "")
+            if(vsPath != "" && MSCVwork)
             {
                 return vsBase + vsPath + vsPost;
             }
@@ -609,7 +616,7 @@ std::string RPAutoManager::m_GetDefaultCompiler(size_t osIndex)
             {
                 if(gpp != 0)
                 {
-                    std::cout << "No windows compiler found - Please install either g++ or Visual Studio 2015/2016/2017/2018/2019/2020" << std::endl;
+                    std::cout << "No windows compiler found - Please install either g++ or Visual Studio 2015/2016/2017/2018/2019/2020 (2019 is tested)" << std::endl;
                     exit(1);
                 }
                 else
