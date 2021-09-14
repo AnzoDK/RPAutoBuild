@@ -358,16 +358,16 @@ void RPAutoManager::ParseConfig()
 {
     
 
-    if(!fs::exists(m_workFolder+"/"+"rpauto.build"))
+    if(!fs::exists(m_workFolder+"/"+m_autoFile))
     {
-        std::cout << "No rpauto.build file found" << std::endl;
+        std::cout << "No " + m_autoFile + " file found" << std::endl;
         //DEBUG
-        std::cout << "Search path: " << m_workFolder+"/"+"rpauto.build" << std::endl;
+        std::cout << "Search path: " << m_workFolder+"/"+m_autoFile << std::endl;
         exit(1);
     }
     std::string currLine = "";
     std::vector<std::string> lines = std::vector<std::string>();
-    std::ifstream file(m_workFolder+"/"+"rpauto.build");
+    std::ifstream file(m_workFolder+"/"+m_autoFile);
     while (std::getline(file, currLine))
     {
         lines.push_back(currLine);
@@ -527,7 +527,7 @@ void RPAutoManager::ParseConfig()
     }
     
 }
-
+#if (defined(linux) || defined(Linux))
 std::string RPAutoManager::m_GetDefaultCompiler(size_t osIndex)
 {
     std::string os = oses.at(osIndex);
@@ -569,6 +569,90 @@ std::string RPAutoManager::m_GetDefaultCompiler(size_t osIndex)
         exit(1);
     }
 }
+#elif (defined(win32) || defined(win64))
+std::string RPAutoManager::m_GetDefaultCompiler(size_t osIndex)
+{
+    //Determine if a supported VS Installation is present
+    std::string vsPath = "";
+    std::string vsBase = "C:\\Program Files (x86)\\Microsoft Visual Studio\\";
+    std::string vsPost = "\\Community\\Common7\\Tools\\cl.exe";
+    for(int i = 2015; i < 2022; i++)
+    {
+        DWORD ftyp = GetFileAttributesA(std::string(vsBase + std::to_string(i)).c_str());
+        if (ftyp == INVALID_FILE_ATTRIBUTES)
+        {
+            std::cout << "Version: " << std::to_string(i) << " Not found" << std::endl;
+            continue;
+        }
+        
+
+        if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
+        {
+            std::cout << "Found version: " << std::to_string(i) << std::endl;
+            vsPath = std::to_string(i);
+            break;
+        }
+    }
+    int gpp = 0;
+    gpp = system("g++ --version");
+    
+    std::string os = oses.at(osIndex);
+    if(os == "Windows" || os == "windows")
+    {
+        if(arch == "x86_64" || arch == "x86")
+        {
+            if(vsPath != "")
+            {
+                return vsBase + vsPath + vsPost;
+            }
+            else
+            {
+                if(gpp != 0)
+                {
+                    std::cout << "No windows compiler found - Please install either g++ or Visual Studio 2015/2016/2017/2018/2019/2020" << std::endl;
+                    exit(1);
+                }
+                else
+                {
+                    return "g++";
+                }
+            }
+            
+        }
+        else
+        {
+            std::cout << "Invalid Arch" << std::endl;
+            exit(1);
+        }
+    }
+    else if (os == "Linux" || os == "linux")
+    {
+        if(arch == "x86_64" || arch == "x86")
+        {
+            if(gpp != 0)
+            {
+                return "g++";
+            }
+            else
+            {
+                std::cout << "No Linux compiler found - Please install g++" << std::endl;
+                exit(1);
+            }
+            
+        }
+        else
+        {
+            std::cout << "Invalid Arch" << std::endl;
+            exit(1);
+        }
+    }
+    else
+    {
+        std::cout << "Couldn't parse OS: " << os << std::endl;
+        exit(1);
+    }
+}
+#endif
 
 bool RPAutoManager::m_TargetSettingExists(std::string name, std::string setting)
 {

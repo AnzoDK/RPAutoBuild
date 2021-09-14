@@ -47,7 +47,7 @@ private:
 class RPAutoManager
 {
 public:
-    RPAutoManager(std::string workFolder) {m_workFolder = workFolder;};
+    RPAutoManager(std::string workFolder, std::string autofile="rpauto.build") {m_workFolder = workFolder;m_autoFile = autofile;};
     ~RPAutoManager() {
         //linesBackup.clear();oses.clear(); 
         //targetConfig.clear(); 
@@ -67,6 +67,7 @@ public:
     void Build();
 private:
     std::string m_workFolder;
+    std::string m_autoFile;
     std::vector<std::string> linesBackup = std::vector<std::string>();
     std::vector<std::string> oses = std::vector<std::string>();
     std::vector<std::string> targetConfig = std::vector<std::string>();

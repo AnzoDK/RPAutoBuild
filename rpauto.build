@@ -20,14 +20,14 @@ __default__ (_final_) | __configman__ | __main__
 - lib:_nolib_
 - out:rpauto
 - in:_depends_
-- flags:_var(global_flags)_;_var(Windows_flags)_
+- flags:_var(global_flags)_
 # - link:_var(Windows_link)_
 
 __configman__ (_obj_)
 - in:configman.cpp
-- flags:_var(global_flags)_;_var(Windows_flags)_
+- flags:_var(global_flags)_
 
 __main__ (_obj_)
 - in:main.cpp
-- flags:_var(global_flags)_;_var(Windows_flags)_
+- flags:_var(global_flags)_
 

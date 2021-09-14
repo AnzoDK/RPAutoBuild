@@ -4,10 +4,16 @@
 #include <fstream>
 #include <vector>
 #if defined(win32) || defined(win64)
+
+typedef unsigned char uint8_t;
+
 #include <RPCommon.h>
-#elif defined(linux)
+#include <windows.h>
+#include <string>
+#elif defined(linux) || defined(Linux)
 #include <RPCommon/RPCommon.h>
 #endif
+
 //Errors
 class LinkParseException : public std::exception
 {
