@@ -7,6 +7,7 @@
 
 typedef unsigned char uint8_t;
 #define __HOST win64
+#define NO_COLOR
 
 #include <RPCommon.h>
 #include <windows.h>

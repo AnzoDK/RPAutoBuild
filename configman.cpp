@@ -930,7 +930,14 @@ void RPAutoManager::m_buildTarget(size_t i,std::string target)
             }
             else
             {
-                buildCommand += " "+m_GetDependecyKey(target).keyValue.at(u)+".o";
+                if(m_GetAutobuildSetting("MSCV").keyValue == "true")
+                {
+                    buildCommand += " "+m_GetDependecyKey(target).keyValue.at(u)+".obj";
+                }
+                else
+                {
+                    buildCommand += " "+m_GetDependecyKey(target).keyValue.at(u)+".o";
+                }
             }
         }
     }
@@ -1100,6 +1107,10 @@ void RPAutoManager::m_buildTarget(size_t i,std::string target)
     }
     //Need to escape 'n stuff at some point
     std::cout << "Running: \"" << buildCommand << "\"" << std::endl;  
+    if(m_GetAutobuildSetting("MSCV").keyValue == "true")
+    {
+        buildCommand = "\"" + buildCommand + "\"";
+    }
     int err = system(buildCommand.c_str());
     if(err != 0)
     {
