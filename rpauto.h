@@ -3,15 +3,17 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
-#if defined(win32) || defined(win64)
+#if defined(WIN32) || defined(WIN64)
 
 typedef unsigned char uint8_t;
+#define __HOST win64
 
 #include <RPCommon.h>
 #include <windows.h>
 #include <string>
 #elif defined(linux) || defined(Linux)
 #include <RPCommon/RPCommon.h>
+#define __HOST linux
 #endif
 
 //Errors
@@ -49,11 +51,11 @@ static std::string GetOSDefine(std::string os, std::string arch)
     {
         if(arch == "x86")
         {
-            return "win32";
+            return "WIN32";
         }
         else if(arch == "x86_64")
         {
-            return "win64"; //this might be an issue...
+            return "WIN64"; //this might be an issue...
         }
         else
         {

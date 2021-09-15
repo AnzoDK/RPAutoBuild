@@ -2,7 +2,7 @@
 pkgname="rpautobuild"
 provides=('rpautobuild')
 depends=('rpcommon>=0.1.11')
-pkgver=0.1.r38.579ba9a
+pkgver=0.1.r40.b9a27a4
 MAJORVERSION=0.1
 pkgver()
 {

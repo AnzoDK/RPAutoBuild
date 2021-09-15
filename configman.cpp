@@ -569,7 +569,7 @@ std::string RPAutoManager::m_GetDefaultCompiler(size_t osIndex)
         exit(1);
     }
 }
-#elif (defined(win32) || defined(win64))
+#elif (defined(WIN32) || defined(WIN64))
 std::string RPAutoManager::m_GetDefaultCompiler(size_t osIndex)
 {
     //Determine if a supported VS Installation is present
@@ -594,7 +594,7 @@ std::string RPAutoManager::m_GetDefaultCompiler(size_t osIndex)
         }
     }
     bool MSCVwork = true;
-    DWORD ftyp = GetFileAttributesA(std::string(vsBase + std::to_string(i)).c_str());
+    DWORD ftyp = GetFileAttributesA(std::string(vsBase + vsPath + vsPost).c_str());
     if (ftyp == INVALID_FILE_ATTRIBUTES)
     {
         MSCVwork = false;
@@ -610,17 +610,21 @@ std::string RPAutoManager::m_GetDefaultCompiler(size_t osIndex)
         {
             if(vsPath != "" && MSCVwork)
             {
+                autobuildSettings.push_back(Key<std::string>("MSCV","true"));
+                osArgPrefix = "/";
+                osLinkCommand = "/linker";
                 return vsBase + vsPath + vsPost;
             }
             else
             {
                 if(gpp != 0)
                 {
-                    std::cout << "No windows compiler found - Please install either g++ or Visual Studio 2015/2016/2017/2018/2019/2020 (2019 is tested)" << std::endl;
+                    std::cout << "No windows compiler found - Please install either g++ or Visual Studio 2015/2016/2017/2018/2019/2020" << std::endl;
                     exit(1);
                 }
                 else
                 {
+                    autobuildSettings.push_back(Key<std::string>("MSCV","false"));
                     return "g++";
                 }
             }
@@ -897,9 +901,18 @@ void RPAutoManager::m_buildTarget(size_t i,std::string target)
             {
                 front++;
             }
-            buildCommand += "-"+flags.keyValue.substr(front,next-front)+" ";
+            std::string flag = flags.keyValue.substr(front,next-front);
+
+            size_t eLocation = flag.find('=');
+            
+            if((eLocation != std::string::npos) && m_GetAutobuildSetting("MSCV").keyValue == "true")
+            {
+                flag.replace(eLocation,1,":");
+            }
+
+            buildCommand += osArgPrefix+flag+" ";
             front = next;
-        }
+         }
     }
     if(!m_TargetSettingExists(target,"in"))
     {
@@ -1017,7 +1030,7 @@ void RPAutoManager::m_buildTarget(size_t i,std::string target)
         }
        
     }
-    buildCommand += " -o " + out+" ";
+    buildCommand += " " + osArgPrefix +"o " + out+" ";
     
     //Linker
     if(m_TargetSettingExists(target,"link"))

@@ -68,6 +68,8 @@ public:
 private:
     std::string m_workFolder;
     std::string m_autoFile;
+    std::string osArgPrefix = "-";
+    std::string osLinkCommand = "-l";
     std::vector<std::string> linesBackup = std::vector<std::string>();
     std::vector<std::string> oses = std::vector<std::string>();
     std::vector<std::string> targetConfig = std::vector<std::string>();
@@ -122,6 +124,16 @@ private:
             exit(1);
         }
     }
-    
+    Key<std::string> m_GetAutobuildSetting(std::string name)
+    {
+        for(size_t i = 0; i < autobuildSettings.size(); i++)
+        {
+            if(autobuildSettings.at(i).keyName == name)
+            {
+                return autobuildSettings.at(i);
+            }
+        }
+        return Key<std::string>("","");
+    }
 };
 
