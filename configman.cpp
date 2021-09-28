@@ -1106,11 +1106,11 @@ void RPAutoManager::m_buildTarget(size_t i,std::string target)
         }
     }
     //Need to escape 'n stuff at some point
-    std::cout << "Running: \"" << buildCommand << "\"" << std::endl;  
     if(m_GetAutobuildSetting("MSCV").keyValue == "true")
     {
         buildCommand = "\"" + buildCommand + "\"";
     }
+    std::cout << "Running: \"" << buildCommand << "\"" << std::endl;  
     int err = system(buildCommand.c_str());
     if(err != 0)
     {
